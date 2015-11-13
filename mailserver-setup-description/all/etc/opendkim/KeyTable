@@ -1,0 +1,2 @@
+default._domainkey.mail.domain.tld mail.domain.tld:default:/etc/opendkim/default.private
+

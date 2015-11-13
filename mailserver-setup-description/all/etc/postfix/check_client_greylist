@@ -1,0 +1,9 @@
+# regex to check clients which seem to be dynamic
+# only those will be greylisted
+#
+# regex type, no postmap needed
+
+/^unknown$/                                   check_greylist
+/([0-9]{1,3}[.-]){3,4}[^0-9.]+/               check_greylist
+/^(dhcp|dialup|ppp|adsl|host|static|www|server|client)[^.]*[0-9]/     check_greylist
+/^[^.]*[0-9]{5}/                              check_greylist

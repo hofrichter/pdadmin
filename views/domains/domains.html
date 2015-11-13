@@ -1,0 +1,18 @@
+<div class="row head">
+    <div class="col-md-10 col-xs-9">{{ 'domains.name' | i18n }}</div> 
+    <div class="col-md-2 col-xs-3 text-right list-action">{{ 'domains.actions' | i18n }}</div> 
+</div>
+<div class="row" ng-repeat="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-10 col-xs-9"><span ng-hide="row.editModeEnabled">{{row.domain}}</span><input ng-show="row.editModeEnabled" ng-model="row.domain" class="form-control" /></div> 
+    <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-primary" href="javascript:void(0);" ng-click="edit(row);readonly=!readonly;" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a class="label label-danger"  href="javascript:void(0);" ng-click="delete(row);" title="{{'actions.tooltip.delete' | i18n}}"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+    <div ng-show="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-success" href="javascript:void(0);" ng-click="save(row);readonly=!readonly;" title="{{'actions.tooltip.apply' | i18n}}"><span class="glyphicon glyphicon-ok"></span></a>
+        <a class="label label-warning"  href="javascript:void(0);" ng-click="cancel(row);readonly=!readonly;" title="{{'actions.tooltip.cancel' | i18n}}"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+</div>
+<div class="row footer">
+    <div class="col-md-12 col-xs-12 text-right list-action"><a class="label label-success" href="javascript:void(0);" ng-click="create();readonly=false;" title="{{'actions.tooltip.new' | i18n}}"><span class="glyphicon glyphicon-plus"></span></a></div>
+</div> 

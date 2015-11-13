@@ -1,0 +1,51 @@
+<div class="row head">
+    <div class="col-md-4 col-xs-4">{{ 'accounts.username' | i18n }}</div> 
+    <div class="col-md-6 col-xs-5">{{ 'accounts.email' | i18n }}</div> 
+    <div class="col-md-2 col-xs-3 text-right list-action">{{ 'accounts.actions' | i18n }}</div> 
+</div>
+<div class="row" ng-init="editpassword=row.isNew || !row.hasPassword" ng-repeat-start="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-4 col-xs-4"><span ng-hide="row.editModeEnabled">{{row.account}}</span><input ng-show="row.editModeEnabled" ng-model="row.account" class="form-control" /></div> 
+    <div class="col-md-6 col-xs-5"><span ng-hide="row.editModeEnabled">{{row.email}}</span>
+        <div ng-show="row.editModeEnabled" class="input-group" ng-class="{ 'has-error': row.emailPrefix.indexOf('@') > -1 }">
+            <input ng-model="row.emailPrefix" class="form-control" />
+            <div class="input-group-btn" dropdown is-open="status.isopen">
+                <button id="single-button" type="button" class="btn btn-{{ row.emailPrefix.indexOf('@') > -1 ? 'danger' : 'primary' }} dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+                    @{{row.emailSuffix}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li ng-repeat="item in domains">
+                        <a ng-click="row.emailSuffix=item.domain">{{item.domain}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-{{row.hasPassword ? 'primary' : 'warning'}}" href="javascript:void(0);" ng-click="edit(row);" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a class="label label-danger"  href="javascript:void(0);" ng-click="delete(row);" title="{{'actions.tooltip.delete' | i18n}}"><span class="glyphicon glyphicon-trash"></span></a>
+        <!--span ng-show="row.editModeEnabled" class="v-spacer"></span-->
+    </div>
+    <div ng-show="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a ng-hide="editpassword" class="label label-default"  href="javascript:void(0);" ng-click="password(row);editpassword=!editpassword" title="{{'label.change-password' | i18n}}" title="{{'accounts.actions.tooltip.password.open' | i18n}}"><span class="glyphicon glyphicon-eye-open"></span></a>
+        <a ng-show="editpassword" class="label label-default"  href="javascript:void(0);" ng-click="password(row);editpassword=!editpassword" title="{{'label.change-password' | i18n}}" title="{{'accounts.actions.tooltip.password.close' | i18n}}"><span class="glyphicon glyphicon-eye-close"></span></a>
+        <a ng-hide="editpassword && pw.raw.length == 0 && pw.raw != pw.retyped" class="label label-success" href="javascript:void(0);" ng-click="save(row);editpassword=false;" title="{{'actions.tooltip.apply' | i18n}}"><span class="glyphicon glyphicon-ok"></span></a>
+        <a ng-show="editpassword && pw.raw.length == 0 && pw.raw != pw.retyped" class="label label-default" style="cursor:not-allowed;" title="{{'actions.tooltip.apply' | i18n}}"><span class="glyphicon glyphicon-ok"></span></a>
+        <a class="label label-warning"  href="javascript:void(0);" ng-click="cancel(row);editpassword=false;" title="{{'actions.tooltip.cancel' | i18n}}"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+</div>
+<div class="row" ng-show="row.editModeEnabled && editpassword" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-1 col-xs-1"></div>
+    <div class="col-md-3 col-xs-3"><strong>{{ 'label.password' | i18n }}:</strong></div>
+    <div class="col-md-6 col-xs-5"><input title="{{ 'label.password' | i18n }}" type="password" ng-model="pw.raw" class="form-control" /></div>
+    <div class="col-md-2 hidden-xs"></div>
+</div> 
+<div class="row" ng-repeat-end ng-show="row.editModeEnabled && editpassword" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-1 col-xs-1"></div>
+    <div class="col-md-3 col-xs-3"><strong>{{ 'label.password.retype' | i18n }}:</strong></div>
+    <div class="col-md-6 col-xs-5"><input title="{{ 'label.password' | i18n }}" type="password" ng-model="pw.retyped" class="form-control" /></div>
+    <div class="col-md-2 hidden-xs"></div>
+</div> 
+<div class="row footer">
+    <div class="col-md-12 col-xs-12 text-right list-action"><a class="label label-success" href="javascript:void(0);" ng-click="create();" title="{{'actions.tooltip.new' | i18n}}"><span class="glyphicon glyphicon-plus"></span></a></div>
+</div> 
+

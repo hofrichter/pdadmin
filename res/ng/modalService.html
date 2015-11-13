@@ -1,0 +1,14 @@
+<div class="modal-header modal-{{config.type}}">
+    <h3 class="modal-title">{{config.title}}</h3>
+</div>
+<div class="modal-body">
+    {{config.body}}
+    <dl class="dl-horizontal text-overflow" ng-repeat="(key, value) in data">
+        <dt>{{key}}</dt>
+        <dd>{{value}}</dd>
+    </dl>
+</div>
+<div class="modal-footer">
+    <button ng-show="config.okButton" class="btn {{config.okButtonType}}" type="button" ng-click="ok()"><span class="glyphicon {{config.okButtonGlyphicon}}" aria-hidden="true"></span> {{config.okButtonLabel | i18n}}</button>
+    <button ng-show="config.cancelButton" class="btn {{config.cancelButtonType}}" type="button" ng-click="cancel()"><span class="glyphicon {{config.cancelButtonGlyphicon}}" aria-hidden="true"></span> {{config.cancelButtonLabel | i18n}}</button>
+</div>

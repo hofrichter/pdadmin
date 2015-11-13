@@ -1,0 +1,23 @@
+<div class="row head">
+    <div class="col-md-7 col-xs-6">{{ 'addresses.emailpattern' | i18n }}</div> 
+    <div class="col-md-3 col-xs-3">{{ 'addresses.account' | i18n }}</div> 
+    <div class="col-md-2 col-xs-3 text-right list-action">{{ 'addresses.actions' | i18n }}</div> 
+</div>
+<div class="row" ng-repeat="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-7 col-xs-6"><span ng-hide="row.editModeEnabled">{{row.emailpattern}}</span><input ng-show="row.editModeEnabled" ng-model="row.emailpattern" class="form-control" /></div> 
+    <div class="col-md-3 col-xs-3">
+        <div checkeddropdown readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-string="toString" to-model="toModel" nothing-selected-label="{{ 'select.chooseplease' | i18n }}"></div>
+    </div> 
+    <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-primary" href="javascript:void(0);" ng-click="edit(row);" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a class="label label-danger"  href="javascript:void(0);" ng-click="delete(row);" title="{{'actions.tooltip.delete' | i18n}}"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+    <div ng-show="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-success" href="javascript:void(0);" ng-click="save(row);" title="{{'actions.tooltip.apply' | i18n}}"><span class="glyphicon glyphicon-ok"></span></a>
+        <a class="label label-warning"  href="javascript:void(0);" ng-click="cancel(row);" title="{{'actions.tooltip.cancel' | i18n}}"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+</div>
+<div class="row footer">
+    <div class="col-md-12 col-xs-12 text-right list-action"><a class="label label-success" href="javascript:void(0);" ng-click="create();" title="{{'actions.tooltip.new' | i18n}}"><span class="glyphicon glyphicon-plus"></span></a></div>
+</div> 
+

@@ -1,0 +1,7 @@
+####### attention ##############################################################
+# There are more ".gitignore"-files in all folders, which should stay empty!
+################################################################################
+*.zip
+*.tar
+*.tgz
+*.tar.gz

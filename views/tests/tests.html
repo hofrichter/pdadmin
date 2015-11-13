@@ -1,0 +1,48 @@
+<div class="row" style="padding-bottom:20px;">
+    <div class="col-md-6 col-xs-6">
+        <a ng-hide="released" class="label label-{{ testsSuccess == false ? 'warning' : 'success' }}" href="javascript:void(0);" ng-click="deploy()"><span class="glyphicon glyphicon-play"></span> {{ 'tests.deploy' | i18n }}</a>
+        <a ng-show="released" class="label label-danger" href="javascript:void(0);" ng-click="undeploy()"><span class="glyphicon glyphicon-stop"></span> {{ 'tests.undeploy' | i18n }}</a>
+    </div>
+    <div class="col-md-6 col-xs-6 text-right">
+        <a class="label label-success" href="javascript:void(0);" ng-click="runTests()"><span class="glyphicon glyphicon-play"></span> {{ 'tests.rerun' | i18n }}</a>
+    </div>
+</div>
+<div class="row">
+    <div ng-hide="{{!nextDeployment}}" class="label default">{{ 'tests.nextDeployment' | i18n }}: {{nextDeployment.countdown}}{{ 'time.sec' | i18n }} {{ 'time.at' | i18n }} {{nextDeployment.timestamp}}</div>
+</div>
+<div class="row">
+    <div class="label default">{{ 'tests.status' | i18n }}:</div> 
+    <div class="label"><span class="success glyphicon glyphicon-ok-sign"></span> <span class="default">{{ 'tests.status.ok' | i18n }}</span></div>
+    <div class="label"><span class="danger glyphicon glyphicon-remove-sign"></span> <span class="default">{{ 'tests.status.mismatch' | i18n }}</span></div>
+    <div class="label"><span class="disabled glyphicon glyphicon-minus"></span> <span class="default">{{ 'tests.status.untestet' | i18n }}</span></div>
+</div>
+
+<div class="row head">
+    <div class="col-md-1 col-xs-1 hidden-xs">{{ 'tests.status' | i18n }}</div><div class="visible-xs col-xs-1"></div> 
+    <div class="col-md-6 col-xs-5">{{ 'tests.email' | i18n }}</div> 
+    <div class="col-md-3 col-xs-3">{{ 'tests.account' | i18n }}</div> 
+    <div class="col-md-2 col-xs-3 text-right list-action">{{ 'tests.actions' | i18n }}</div> 
+</div>
+<div class="row" ng-repeat="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-1 col-xs-1" style="cursor:default;">
+        <span ng-show="{{testStatus(row.testresult) == 'success' }}" class="success glyphicon glyphicon-ok-sign" title="{{ 'tests.status.ok' | i18n }}"></span>
+        <span ng-show="{{testStatus(row.testresult) == 'failed'  }}" class="danger glyphicon glyphicon-exclamation-sign" title="{{ 'tests.status.mismatch.expected' | i18n }}'{{row.testresult.expected}}'{{ 'tests.status.mismatch.actual' | i18n }}'{{row.testresult.actual}}'"></span>
+        <span ng-show="{{testStatus(row.testresult) == 'untested'}}" class="disabled glyphicon glyphicon-minus" title="{{ 'tests.status.untestet' | i18n }}"></span>
+    </div>
+    <div class="col-md-6 col-xs-5"><span ng-hide="row.editModeEnabled">{{row.email}}</span><input ng-show="row.editModeEnabled" ng-model="row.email" class="form-control" /></div> 
+    <div class="col-md-3 col-xs-3">
+        <div checkeddropdown readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-string="toString" to-model="toString"></div>
+    </div> 
+    <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-primary" href="javascript:void(0);" ng-click="edit(row);" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a class="label label-danger"  href="javascript:void(0);" ng-click="delete(row);" title="{{'actions.tooltip.delete' | i18n}}"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+    <div ng-show="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-success" href="javascript:void(0);" ng-click="save(row);" title="{{'actions.tooltip.apply' | i18n}}"><span class="glyphicon glyphicon-ok"></span></a>
+        <a class="label label-warning"  href="javascript:void(0);" ng-click="cancel(row);" title="{{'actions.tooltip.cancel' | i18n}}"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+</div>
+<div class="row footer">
+    <div class="col-md-12 col-xs-12 text-right list-action"><a class="label label-success" href="javascript:void(0);" ng-click="create();" title="{{'actions.tooltip.new' | i18n}}"><span class="glyphicon glyphicon-plus"></span></a></div>
+</div> 
+

@@ -1,0 +1,17 @@
+RewriteEngine On
+#RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(?!index.php)(.*)$ index.php/$1 [QSA,L]
+
+# we give no access to files with an internal character:
+RedirectMatch 403 .*\.incl\.php$
+RedirectMatch 403 .*/config/.*$
+RedirectMatch 403 .*/logs/.*$
+RedirectMatch 403 .*/mailserver-setup-description/.*$
+RedirectMatch 403 .*\.test\.php$
+RedirectMatch 403 .*\.sh$
+RedirectMatch 403 .*_test\.js$
+RedirectMatch 403 .*\.cfg$
+RedirectMatch 403 .*\.md$

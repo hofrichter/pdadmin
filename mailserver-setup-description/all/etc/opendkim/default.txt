@@ -1,0 +1,2 @@
+default._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
+	  "p=ABC...XYZ" )  ; ----- DKIM key default for mail.domain.tld

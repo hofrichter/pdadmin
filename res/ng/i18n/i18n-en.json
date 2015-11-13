@@ -1,0 +1,22 @@
+{   "LOCALE:ID": "en",
+    "head.login":  "Login",
+    "label.password": "Password",
+    "label.password.tooltip": "Enter your password here, please.",
+    "label.password.retype": "Passord retype",
+    "label.password.retype.tooltip": "Repeat your password please. This should avoid, that you get locked out..",
+    "label.password.retype.failed": "The repeated password does not match!",
+    "label.email": "E-Mail",
+    "label.email.placeholder": "address@example...",
+    "label.email.tooltip": "Enter your E-Mail address please.",
+    
+    "button.create": "Create",
+    "button.apply": "Apply",
+    "button.reset": "Reset",
+    "button.remove": "Delete",
+    "button.signon": "Signon",
+    "button.login": "Login",
+    "button.send": "Send",
+    "settings.label.private": "Privat",
+    "settings.label.protected": "Protected",
+    "settings.label.public": "Public"
+}

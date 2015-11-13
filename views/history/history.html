@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="label default">{{ 'history.status' | i18n }}:</div>
+    <div class="label"><span class="success glyphicon glyphicon-ok-sign"></span> <span class="default">{{ 'history.status.ok' | i18n }}</span></div>
+    <div class="label"><span class="warning glyphicon glyphicon-user"></span> <span class="default">{{ 'history.status.pw_only' | i18n }}</span></div>
+    <div class="label"><span class="danger glyphicon glyphicon-exclamation-sign"></span> <span class="default">{{ 'history.status.failed' | i18n }}</span></div>
+</div>
+
+<div class="row head">
+    <div class="col-md-1 col-xs-1 hidden-xs">{{ 'history.status' | i18n }}</div><div class="visible-xs col-xs-1"></div> 
+    <div class="col-md-9 col-xs-8">{{ 'history.name' | i18n }}</div> 
+    <div class="col-md-2 col-xs-3 text-right list-action">{{ 'history.actions' | i18n }}</div> 
+</div>
+<div class="row" ng-repeat="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="col-md-1 col-xs-1" style="cursor:default;">
+        <span ng-show="{{status(row) == 'ok' }}" class="success glyphicon glyphicon-ok-sign" title="{{ 'history.status.success' | i18n }}"></span>
+        <span ng-show="{{status(row) == 'pw_only' }}" class="warning glyphicon glyphicon-user" title="{{ 'history.status.pw_only' | i18n }}"></span>
+        <span ng-show="{{status(row) == ''  }}"  class="danger glyphicon glyphicon-exclamation-sign" title="{{ 'history.status.failed' | i18n }}"></span>
+    </div>
+
+    <div class="col-md-9 col-xs-8">{{format(row)}} <span style="font-size:0.8em;color:#888888">{{statusText(row)}}</span></div> 
+    <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
+        <a class="label label-success" href="javascript:void(0);" ng-click="log(row);" title="{{ 'history.tooltip.show-log' | i18n }}"><span class=" glyphicon glyphicon-eye-open"></span></a>
+        <a class="label label-primary" href="javascript:void(0);" ng-click="restore(row);" title="{{ 'history.tooltip.restore' | i18n }}"><span class=" glyphicon glyphicon-share"></span></a>
+        <a class="label label-danger"  href="javascript:void(0);" ng-click="delete(row);" title="{{ 'history.tooltip.delete' | i18n }}"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+</div> 

@@ -1,0 +1,133 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+## TLS parameters
+#smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+#smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+#smtpd_use_tls=yes
+#smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+#smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+#
+## See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+## information on enabling SSL in the smtp client.
+#
+#smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+#myhostname = v22015042778124635.yourvserver.net
+#alias_maps = hash:/etc/aliases
+#alias_database = hash:/etc/aliases
+#myorigin = /etc/mailname
+#mydestination = mail.sugarfree.im, v22015042778124635.yourvserver.net, localhost.yourvserver.net, localhost
+#relayhost = 
+#mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+#mailbox_size_limit = 0
+#recipient_delimiter = +
+#inet_interfaces = all
+#inet_protocols = all
+
+
+# sollte sich mit "/etc/hostname" decken:
+myhostname = <@@@Wert aus /etc/hostname>
+myorigin = /etc/mailname
+mydestination = $myhostname, $mydomain, localhost, localhost.$mydomain
+relayhost =
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+relay_domains = $mydestination
+syslog_name=postfix/submission
+##Aliases / Recipients
+#alias_maps = hash:/etc/aliases
+#alias_database = hash:/etc/aliases
+#local_recipient_maps = proxy:unix:passwd.byname $alias_maps
+
+virtual_mailbox_base    = /var/mail/vhosts
+virtual_mailbox_domains = hash:/etc/postfix/domains
+virtual_alias_maps      = hash:/etc/postfix/addresses
+virtual_mailbox_maps    = hash:/etc/postfix/accounts
+
+virtual_minimum_uid = 100
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+
+
+#SSL/TLS
+smtpd_tls_cert_file=/etc/ssl/certs/sugarfree-im.crt
+smtpd_tls_key_file=/etc/ssl/private/sugarfree-im.key
+smtpd_use_tls=yes
+smtpd_tls_auth_only = yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_security_level=may
+smtpd_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_wrappermode=no
+smtpd_sasl_type=dovecot
+smtpd_sasl_path=private/auth
+smtpd_sasl_auth_enable=yes
+milter_macro_daemon_name=ORIGINATING
+#Security and Anti-Spam cinfig
+#policy-spf_time_limit = 3600s
+smtpd_helo_required = yes
+
+smtpd_relay_restrictions =
+    permit_mynetworks
+    permit_sasl_authenticated
+    reject_unauth_destination
+    defer_unauth_destination
+
+smtpd_recipient_restrictions =
+    reject_non_fqdn_recipient
+    reject_unknown_recipient_domain
+    permit_mynetworks
+    permit_sasl_authenticated
+    reject_unauth_destination
+    check_policy_service unix:private/policy-spf
+    check_client_access regexp:/etc/postfix/check_client_greylist
+    #check_policy_service inet:127.0.0.1:10023
+
+smtpd_helo_restrictions =
+    permit_mynetworks
+    reject_non_fqdn_helo_hostname
+    reject_invalid_helo_hostname
+
+smtpd_client_restrictions=
+    permit_mynetworks
+    permit_sasl_authenticated
+    reject_unknown_client_hostname
+
+smtpd_data_restrictions =
+    reject_unauth_pipelining
+
+smtpd_restriction_classes =
+    check_greylist
+
+check_greylist = check_policy_service inet:127.0.0.1:10023
+
+#DKIM
+milter_default_action = accept
+milter_protocol = 6
+smtpd_milters = inet:localhost:8891
+non_smtpd_milters = inet:localhost:8891
+content_filter = smtp-amavis:[127.0.0.1]:10024
+receive_override_options = no_address_mappings
+
+# Since postfix will pass on the recipient to spamc, we need to tell postfix to deliver the e-mail to each user separately. To do this add the following line to /etc/postfix/main.cf
+spamassassin_destination_recipient_limit = 1

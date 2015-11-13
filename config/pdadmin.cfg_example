@@ -1,0 +1,19 @@
+; the e-mail-address for all notification about configuration rollouts
+MAIL_RECEIVER=
+
+; source- and backup-directories
+RELEASE_DIR=/var/www/pd@min/config/release
+BACKUP_DIR=/var/www/pd@min/config/backup
+WORK_DIR=/var/www/pd@min/config/work
+DEPLOY_NEXT_RUN=/var/www/pd@min/config/next-deployment-run.txt
+
+; target-directories
+POSTFIX_CONF_DIR=/etc/postfix
+DOVECOT_CONF_DIR=/etc/dovecot
+ACCOUNTS_DIR=/var/mail/vhosts/
+
+; some commands to compile/publish the server configuration:
+DEPLOY_INTERVAL=15
+POSTMAP_BIN=/usr/sbin/postmap
+POSTFIX_RESTART=service postfix restart
+DOVECOT_RESTART=service dovecot restart

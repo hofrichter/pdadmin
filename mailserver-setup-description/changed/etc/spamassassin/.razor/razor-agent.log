@@ -1,0 +1,10 @@
+Sep 20 14:24:13.665326 admin[16447]: [ 2] [bootup] Logging initiated LogDebugLevel=3 to file:/etc/spamassassin/.razor/razor-agent.log
+Sep 20 14:24:13.665611 admin[16447]: [ 2]  Razor-Agents v2.84 starting razor-admin -home=/etc/spamassassin/.razor -discover
+Sep 20 18:40:35.319278 admin[16803]: [ 2] [bootup] Logging initiated LogDebugLevel=3 to file:/etc/spamassassin/.razor/razor-agent.log
+Sep 20 18:40:35.320182 admin[16803]: [ 2]  Razor-Agents v2.84 starting razor-admin -home=/etc/spamassassin/.razor -create
+Sep 20 18:40:35.841389 admin[16804]: [ 2] [bootup] Logging initiated LogDebugLevel=3 to file:/etc/spamassassin/.razor/razor-agent.log
+Sep 20 18:40:35.841692 admin[16804]: [ 2]  Razor-Agents v2.84 starting razor-admin -home=/etc/spamassassin/.razor -register
+Sep 20 18:40:36.282685 admin[16804]: [ 3] Attempting to register.
+Sep 20 18:40:36.616686 admin[16804]: [ 3] Register successful.  Identity stored in /etc/spamassassin/.razor/identity-ru07m6pIz9
+Sep 20 18:40:36.750385 admin[16805]: [ 2] [bootup] Logging initiated LogDebugLevel=3 to file:/etc/spamassassin/.razor/razor-agent.log
+Sep 20 18:40:36.750761 admin[16805]: [ 2]  Razor-Agents v2.84 starting razor-admin -home=/etc/spamassassin/.razor -discover
