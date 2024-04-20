@@ -6,7 +6,7 @@
 <div class="row" ng-repeat="row in data" ng-class-odd="'odd'" ng-class-even="'even'">
     <div class="col-md-7 col-xs-6"><span ng-hide="row.editModeEnabled">{{row.emailpattern}}</span><input ng-show="row.editModeEnabled" ng-model="row.emailpattern" class="form-control" /></div> 
     <div class="col-md-3 col-xs-3">
-        <div checkeddropdown readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-string="toString" to-model="toModel" nothing-selected-label="{{ 'select.chooseplease' | i18n }}"></div>
+        <div checkeddropdown readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-label="toLabel" to-string="toString" to-model="toModel" nothing-selected-label="{{ 'select.chooseplease' | i18n }}"></div>
     </div> 
     <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
         <a class="label label-primary" href="javascript:void(0);" ng-click="edit(row);" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>

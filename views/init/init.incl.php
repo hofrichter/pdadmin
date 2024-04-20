@@ -7,16 +7,14 @@ $GLOBALS['ADMIN_ROLE_REQUIRED'] = false;
  * checking the session. It returns http-status 200, if the session exists
  * and contains a valid 'user:id' and is not timedout.
  */
-include_once(INST_DIR . '/res/backend/lib/apache-log4php-2.3.0/Logger.php');
 
 /**
  * Function to handle HTTP-GET-requests.
  * @param Array, $requestData are the requested data
  */
 function get(array $requestData) {
-    $logger = Logger::getLogger(basename(__FILE__));
     if (validateSession()) {
-        $logger->info("Session is valid.");
+        info(__FILE__, __LINE__, "Session is valid.");
         header(HTTP_VERSION . ' ' . HTTP_200);
         return;
     } else {
@@ -30,7 +28,7 @@ function get(array $requestData) {
                 return;
             }
         }
-        $logger->info("Session is invalid.");
+        info(__FILE__, __LINE__, "Session is invalid.");
         header(HTTP_VERSION . ' ' . HTTP_401);
     }
 }

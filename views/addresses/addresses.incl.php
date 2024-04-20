@@ -4,6 +4,9 @@ $GLOBALS['ADDRESSES_FILE'] = ADDRESSES;
 $GLOBALS['ADDRESSES_SAVE'] = array('emailpattern' => 0, 'account' => 1);
 $GLOBALS['ADDRESSES_LOAD'] = array('emailpattern' => 0, 'account' => 1);
 
+$GLOBALS['ACCOUNTS_FILE'] = ACCOUNTS;
+$GLOBALS['ACCOUNTS_LOAD'] = array('email' => 0, 'account' => 1);
+
 /**
  * @see files.incl.php
  * @Override
@@ -14,31 +17,42 @@ function __identify($oldData, $newData) {
         && $oldData['emailpattern'] == $newData['emailpattern'];
 }
 
-function __splitAccounts($rows) {
-    if (@is_array($rows)) {
-        $result = array();
-        for ($i = 0; $i < count($rows); $i++) {
-            foreach (explode(',', $rows[$i]['account']) as $account) {
-                if (!isset($result[$rows[$i]['emailpattern']])) {
-                    $result[$rows[$i]['emailpattern']] = array(
-                        '#' => $rows[$i]['#'],
-                        'emailpattern' => $rows[$i]['emailpattern'],
-                        'account' => array()
-                    );
-                }
-                $result[$rows[$i]['emailpattern']]['account'][] = $account;
+function prepareSave(array $requestData) {
+    $result = array();
+    if (isset($requestData['account'])) {
+        $requestData['account'] = implode(',', $requestData['account']);
+        $result = $requestData;
+    } elseif (is_array($requestData)) {
+        foreach ($requestData as $address) {
+            if (isset($address['account'])) {
+                $address['account'] = implode(',', $address['account']);
+                $result[]= $address;
             }
-        }
-        $rows = array_values($result);
+        }        
     }
-    return $rows;
+    return $result;
 }
 
-function __joinAccounts($row) {
-    if (isset($row['account']) && is_array($row['account'])) {
-        $row['account'] = implode(',', $row['account']);
+function prepareLoad(array $requestData) {
+    $accounts = __load('ACCOUNTS');
+    $result = array();
+    if (is_array($requestData)) {
+        foreach ($requestData as $address) {
+            if (isset($address['account'])) {
+                $found = false;
+                foreach ($accounts as $account) {
+                    // ignore mails, of the accounts itselfs
+                    if ($account['email'] == $address['emailpattern']) {
+                        continue;
+                    }
+                    $address['account'] = explode(',', $address['account']);
+                    $result[]= $address;
+                    break;
+                }
+            }
+        }        
     }
-    return $row;
+    return $result;
 }
 
 /**
@@ -46,7 +60,7 @@ function __joinAccounts($row) {
  * @param Array, $requestData are the requested data
  */
 function get(array $requestData) {
-    return __splitAccounts(__load('ADDRESSES'));
+    return prepareLoad(__load('ADDRESSES'));
 }
 
 /**
@@ -54,8 +68,7 @@ function get(array $requestData) {
  * @param Array, $requestData are the requested data
  */
 function put(array $requestData, $isPost = false) {
-    $row = __joinAccounts($requestData);
-    __save('ADDRESSES', $row, $isPost);
+    __save('ADDRESSES', prepareSave($requestData), $isPost);
     return get($requestData);
 }
 
@@ -72,7 +85,7 @@ function post(array $requestData) {
  * @param Array, $requestData are the requested data
  */
 function delete(array $requestData) {
-    __delete('ADDRESSES', $requestData);
+    __delete('ADDRESSES', prepareSave($requestData));
     return get($requestData);
 }
 ?>

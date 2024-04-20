@@ -51,11 +51,6 @@ angular.module('addresses', ['ngRoute'])
             throw error;
         });
         return promiseAll;
-        //promise.success(function(data, status, headers, config) {
-        //    dao.data = data || [];
-        //    return data;
-        //});
-        //return promise;
     };
     dao.delete = function(data) {
         var promise = $http({'method':'delete', 'url':'addresses', 'data':data });
@@ -71,7 +66,11 @@ angular.module('addresses', ['ngRoute'])
                     , function($scope,  $filter,  modalService,  AddressesDao,  AccountsDao) {
  
     $scope.data = AddressesDao.data;
-    $scope.accounts = AccountsDao.data;
+    $scope.accounts = [];
+
+    for (var i = 0; i < AccountsDao.data.length; i++) {
+        $scope.accounts.push(AccountsDao.data[i].email);
+    }
     var nothingSelected = {'account' : $filter('i18n')('select.chooseplease')};
 
     var backup = {};
@@ -133,11 +132,19 @@ angular.module('addresses', ['ngRoute'])
             console.log('remove data: ', data)
         });
     };
+    $scope.toLabel = function(addresses) {
+        addresses = addresses || [];
+        var label = addresses.join(', ');
+        if (label.length > 23) {
+            return label.substring(0, 20) + '...';
+        }
+        return label;
+    }
     $scope.toString = function(account) {
-        return account.account;
+        return account;
     }
     $scope.toModel = function(account) {
-        return account.account;
+        return account;
     }
 }])
 

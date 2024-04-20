@@ -23,19 +23,23 @@ angular.module('accounts', ['ngRoute', 'accounts', 'domains'])
 .factory('AccountsDao', ['$http', '$q', function($http, $q) {
     var dao = {};
     dao.data = [];
+    
+    var prepareLoadedData = function(data) {
+        dao.data = data || [];
+        for (var i = 0; i < data.length; i++) {
+            var splitted = data[i]['email'].split('@');
+            data[i]['emailPrefix'] = splitted[0];
+            data[i]['emailSuffix'] = splitted[1];
+        }
+        return data;
+    }
     dao.load = function() {
         var promise = $http({'method':'get', 'url':'accounts'});
         promise.success(function (data, status, headers, config) {
             if (data.length > 0 && (typeof(data[0].account) === 'undefined' || typeof(data[0].email) === 'undefined')) {
                 data = [];
             }
-            dao.data = data || [];
-            for (var i = 0; i < data.length; i++) {
-                var splitted = dao.data[i]['email'].split('@');
-                dao.data[i]['emailPrefix'] = splitted[0];
-                dao.data[i]['emailSuffix'] = splitted[1];
-            }
-            return data;
+            return prepareLoadedData(data);
         });
         return promise;
     };
@@ -77,8 +81,9 @@ angular.module('accounts', ['ngRoute', 'accounts', 'domains'])
         var promise2 = $http({'method':'delete', 'url':'passwords', 'data':data });
         var promiseAll = $q.all([promise1, promise2]);
         promiseAll.then(function(data) {
-            dao.data = data || [];
-            return data;
+            dao.data = data[0].data || [];
+            dao.data = prepareLoadedData(dao.data);
+            //return data;
         });
         return promiseAll;
     }
@@ -148,9 +153,8 @@ angular.module('accounts', ['ngRoute', 'accounts', 'domains'])
         delete row.isNew;
         modalService.open({}, row).then(function(data) {
             AccountsDao.delete(data).then(function(data) {
-                $scope.data = data.data;
+                $scope.data = AccountsDao.data;
             });
-            console.log('remove data: ', data)
         });
     };
 }])

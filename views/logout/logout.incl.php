@@ -5,7 +5,6 @@
  * @param Array, $requestData are the requested data
  */
 function get(array $requestData) {
-    $logger = Logger::getLogger(basename(__FILE__));
 
     sessionDestroy();
     unset($_SESSION['user:id']);

@@ -214,6 +214,12 @@ angular.module('tests', ['ngRoute'])
                 if (row.account == nothingSelected) {
                     row.oldaccount = backup.account;
                 }
+                if (typeof(row.oldaccount) == 'object') {
+                    row.oldaccount = row.oldaccount[0];
+                }
+                if (typeof(row.account) == 'object') {
+                    row.account = row.account[0];
+                }
                 TestsDao.save(row).then(function(data) {
                     $scope.data = data.data;
                 });

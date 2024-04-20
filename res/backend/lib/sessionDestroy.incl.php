@@ -1,5 +1,4 @@
 <?php if(!defined('APP_CHECK')) { header('HTTP/1.0 400 Bad Request'); exit(0); }
-include_once(INST_DIR . '/res/backend/lib/apache-log4php-2.3.0/Logger.php');
 
 /**
  * Function to handle HTTP-GET-requests.

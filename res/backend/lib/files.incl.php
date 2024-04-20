@@ -67,24 +67,20 @@ if (!function_exists('__save')) {
     function __save($dataType, array $item, $insert = false) {
         $file = $GLOBALS[$dataType . '_FILE'];
         $fields = $GLOBALS[$dataType . '_SAVE'];
-        $logger = Logger::getLogger(basename(__FILE__));
-
         if (!is_array($item) || count($item) == 0) {
             return __load($dataType);
         }
         $itemRow = array();
         foreach ($fields as $key => $column) {
             if (!isset($item[$key])) {
-                $logger->error("entity.incomplete.datastructure: missing '" . $key . "' in " . var_export($item, true));
+                error(__FILE__, __LINE__, "entity.incomplete.datastructure: missing '" . $key . "' in " . var_export($item, true));
                 throw new Exception("entity.incomplete.datastructure");
             }
             $itemRow[$column] = $item[$key];
         }
         $itemStr = implode("    ", $itemRow);
-
         $lines = @file($file, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
         $lines = @is_array($lines) ? array_unique($lines) : [];
-
         if (isset($item['#']) && $lines) {
             for ($i = 0; $i < count($lines); $i++) {
                 $splitted = __splitRow($fields, $lines[$i]);
@@ -119,7 +115,6 @@ if (!function_exists('__delete')) {
         $file = $GLOBALS[$dataType . '_FILE'];
         $fields = $GLOBALS[$dataType . '_LOAD'];
         
-        $logger = Logger::getLogger(basename(__FILE__));
         if (!is_array($item) || count($item) == 0) {
             return __load($dataType);
         }

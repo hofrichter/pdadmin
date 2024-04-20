@@ -10,7 +10,12 @@ define('APP_CHECK', 1);
 define('INST_DIR', realpath(__DIR__ . "/../../"));
 define('ADDRESSES',  sys_get_temp_dir() . '/yep.ADDRESSES.test');
 $_SESSION['user:id'] = 'unit-test';
-include_once(INST_DIR . '/res/backend/lib/apache-log4php-2.3.0/Logger.php');
+
+require_once(INST_DIR . '/res/backend/lib/LoggerShortcuts.incl.php');
+require_once(INST_DIR . '/res/backend/lib/Logger.incl.php');
+require_once(INST_DIR . '/config/logging.cfg.php');
+Logger::configure($LOGGING);
+
 include_once(INST_DIR . '/res/backend/lib/utilities.incl.php');
 
 require_once(__DIR__ . '/tests.incl.php');

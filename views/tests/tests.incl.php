@@ -16,34 +16,33 @@ function __identify($oldData, $newData) {
 }
 
 function __splitAccounts($rows) {
-    if (@is_array($rows)) {
-        $result = array();
-        for ($i = 0; $i < count($rows); $i++) {
-            foreach (explode(',', $rows[$i]['account']) as $account) {
-                if (!isset($result[$rows[$i]['email']])) {
-                    $result[$rows[$i]['email']] = array(
-                        '#' => $rows[$i]['#'],
-                        'email' => $rows[$i]['email'],
-                        'account' => array()
-                    );
-                }
-                $result[$rows[$i]['email']]['account'][] = $account;
-            }
-        }
-        $rows = array_values($result);
-    }
+    //if (@is_array($rows)) {
+    //    $result = array();
+    //    for ($i = 0; $i < count($rows); $i++) {
+    //        foreach (explode(',', $rows[$i]['account']) as $account) {
+    //            if (!isset($result[$rows[$i]['email']])) {
+    //                $result[$rows[$i]['email']] = array(
+    //                    '#' => $rows[$i]['#'],
+    //                    'email' => $rows[$i]['email'],
+    //                    'account' => array()
+    //                );
+    //            }
+    //            $result[$rows[$i]['email']]['account'][] = $account;
+    //        }
+    //    }
+    //    $rows = array_values($result);
+    //}
     return $rows;
 }
 
 function __joinAccounts($row) {
-    if (isset($row['account']) && is_array($row['account'])) {
-        $row['account'] = implode(',', $row['account']);
-    }
+    //if (isset($row['account']) && is_array($row['account'])) {
+    //    $row['account'] = implode(',', $row['account']);
+    //}
     return $row;
 }
 function __test($result) {
-    $logger = Logger::getLogger(basename(__FILE__));
-    $logger->info("start tests...");
+    info(__FILE__, __LINE__, "start tests...");
     
     if (!file_exists(ADDRESSES)) {
         file_put_contents(ADDRESSES, "");
@@ -54,13 +53,13 @@ function __test($result) {
 
     $cmd = sprintf("%s %s %s", POSTMAP_BIN, ADDRESSES, ACCOUNTS);
     exec($cmd, $postmapResult);
-    $logger->info('compiling ' . $cmd . ': ' .count($postmapResult));
+    info(__FILE__, __LINE__, 'compiling ' . $cmd . ': ' .count($postmapResult));
     
     foreach ($result as $id => $test) {
         $cmd = sprintf("%s -q %s hash:%s hash:%s", POSTMAP_BIN, $test['email'], ADDRESSES, ACCOUNTS);
         $postmapResult = array();
         @exec($cmd, $postmapResult);
-        $logger->info('checking ' . $cmd . ': ' .count($postmapResult));
+        info(__FILE__, __LINE__, 'checking ' . $cmd . ': ' .count($postmapResult));
 
         if (count($postmapResult) >= 1) {
             $tmpResult = array();
@@ -78,13 +77,13 @@ function __test($result) {
             if (!$result[$id]['testresult']) {
                 $result[$id]['testresult'] = array('expected' => implode(',', $test['account']), 'actual' => implode(',', $postmapResult));
             }
-            $logger->debug('testing ' . implode(',', $test['account']) . ': ' . ($result[$id]['testresult'] ? 'correct' : 'failed'));
+            debug(__FILE__, __LINE__, 'testing ' . implode(',', $test['account']) . ': ' . ($result[$id]['testresult'] ? 'correct' : 'failed'));
         } elseif (count($test['account']) > 0) {
             $result[$id]['testresult'] = array('expected' => implode(',', $test['account']), 'actual' => '');
         } else {
             $result[$id]['testresult'] = true;
         }
-        $logger->debug("Testresult: ". json_encode($result[$id]['testresult']));
+        debug(__FILE__, __LINE__, "Testresult: ". json_encode($result[$id]['testresult']));
     }
     return $result;
 }

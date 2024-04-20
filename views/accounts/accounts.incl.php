@@ -4,6 +4,8 @@ $GLOBALS['ACCOUNTS_FILE'] = ACCOUNTS;
 $GLOBALS['ACCOUNTS_SAVE'] = array('email' => 0, 'account' => 1);
 $GLOBALS['ACCOUNTS_LOAD'] = array('email' => 0, 'account' => 1);
 
+//$GLOBALS['ACCOUNT_ADDRESSES_FILE'] = ACCOUNT_ADDRESSES;
+
 $GLOBALS['PASSWORDS_FILE'] = PASSWORDS;
 $GLOBALS['PASSWORDS_LOAD'] = array('password' => 0);
 
@@ -14,6 +16,13 @@ function prepareSave(array $requestData) {
     return $requestData;
 }
 
+function savePseudoMapping ($accounts) {
+    $lines = '';
+    foreach ($accounts as $account) {
+        $lines .= $account['email'] . "  " . $account['email'] . "\n";
+    }
+    file_put_contents(ACCOUNT_ADDRESSES, $lines);
+}
 
 /**
  * Function to handle HTTP-GET-requests.
@@ -42,7 +51,9 @@ function get(array $requestData) {
  */
 function put(array $requestData, $isPost = false) {
     __save('ACCOUNTS', prepareSave($requestData), false);
-    return get($requestData);
+    $result = get($requestData);
+    savePseudoMapping($result);
+    return $result;
 }
 
 /**
@@ -51,7 +62,9 @@ function put(array $requestData, $isPost = false) {
  */
 function post(array $requestData) {
     __save('ACCOUNTS', prepareSave($requestData), true);
-    return get($requestData);
+    $result = get($requestData);
+    savePseudoMapping($result);
+    return $result;
 }
 
 /**
@@ -60,6 +73,8 @@ function post(array $requestData) {
  */
 function delete(array $requestData) {
     __delete('ACCOUNTS', prepareSave($requestData));
-    return get($requestData);
+    $result = get($requestData);
+    savePseudoMapping($result);
+    return $result;
 }
 ?>

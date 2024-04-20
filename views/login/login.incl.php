@@ -24,7 +24,7 @@ function __checkPassword($fileId, array $requestData) {
  * @param Array, $requestData are the requested data
  */
 function post(array $requestData) {
-    $logger = Logger::getLogger(basename(__FILE__));
+    info(__FILE__, __LINE__, "Login request for  " . $requestData['username'] . " (isEmpty-check: username=" . !isEmpty($requestData, 'username') . ", password=" . !isEmpty($requestData, 'password') . ")");
     if (!isEmpty($requestData, 'username') && !isEmpty($requestData, 'password')) {
         sessionDestroy();
         if (__checkPassword('ADMINS', $requestData)) {
@@ -47,7 +47,7 @@ function post(array $requestData) {
         if ($_SESSION['user:isAdmin']) {
             $responseData['isAdmin'] = true;
         }
-        $logger->info("Login was successful for  " . $_SESSION['user:id'] . ". Current session: " . session_id());
+        info(__FILE__, __LINE__, "Login was successful for  " . $_SESSION['user:id'] . ". Current session: " . session_id());
         header(HTTP_VERSION . ' ' . HTTP_200);
         return $responseData;
     }

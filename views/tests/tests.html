@@ -31,7 +31,7 @@
     </div>
     <div class="col-md-6 col-xs-5"><span ng-hide="row.editModeEnabled">{{row.email}}</span><input ng-show="row.editModeEnabled" ng-model="row.email" class="form-control" /></div> 
     <div class="col-md-3 col-xs-3">
-        <div checkeddropdown readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-string="toString" to-model="toString"></div>
+        <div checkeddropdown single-selection="true" readonly="!row.editModeEnabled" items="accounts" selected-items="row.account" to-string="toString" to-model="toString"></div>
     </div> 
     <div ng-hide="row.editModeEnabled" class="col-md-2 col-xs-3 text-right list-action">
         <a class="label label-primary" href="javascript:void(0);" ng-click="edit(row);" title="{{'actions.tooltip.edit' | i18n}}"><span class="glyphicon glyphicon-edit"></span></a>

@@ -13,22 +13,23 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+@session_name("sid");
 @ini_set('session.use_cookies', 0);
 @ini_set('session.use_only_cookies', 0);
 @ini_set('session.use_trans_sid', 1);
 @ini_set('session.cache_delimiter', "");
 //@ini_set('session.save_path', __DIR__ . "/sessions");
 @ini_set('session.save_handler', "files");
-@session_name("sid");
+
 if (isset($_REQUEST['sid'])) {
     @session_id($_REQUEST['sid']);
 } elseif (function_exists('getallheaders')) {
-    $headers = getallheaders();
+    $headers = @array_change_key_case(getallheaders(), CASE_LOWER);
     if (isset($headers['sid'])) {
         @session_id($headers['sid']);
     }
 } elseif (function_exists('apache_response_headers')) {
-    $headers = apache_response_headers();
+    $headers = @array_change_key_case(apache_response_headers(), CASE_LOWER);
     if (isset($headers['sid'])) {
         @session_id($headers['sid']);
     }
@@ -46,47 +47,24 @@ define('POSTMAP_BIN',     isset($ini['POSTMAP_BIN'])     ? $ini['POSTMAP_BIN']  
 define('DEPLOY_INTERVAL', isset($ini['DEPLOY_INTERVAL']) ? $ini['DEPLOY_INTERVAL'] : 15);
 define('DEPLOY_NEXT_RUN', isset($ini['DEPLOY_NEXT_RUN']) ? $ini['DEPLOY_NEXT_RUN'] : '');
 
-if (!defined('ADMINS'))      { define('ADMINS',       WORK_DIR . "/administrators");  }
-if (!defined('ACCOUNTS'))    { define('ACCOUNTS',     WORK_DIR . "/accounts");  }
-if (!defined('DOMAINS'))     { define('DOMAINS',      WORK_DIR . "/domains");   }
-if (!defined('ADDRESSES'))   { define('ADDRESSES',    WORK_DIR . "/addresses"); }
-if (!defined('PASSWORDS'))   { define('PASSWORDS',    WORK_DIR . "/passwords");  }
-if (!defined('TESTS'))       { define('TESTS',        WORK_DIR . "/tests");  }
-
-
+if (!defined('ADMINS'))            { define('ADMINS',            WORK_DIR . "/administrators");  }
+if (!defined('ACCOUNTS'))          { define('ACCOUNTS',          WORK_DIR . "/accounts");  }
+if (!defined('ACCOUNT_ADDRESSES')) { define('ACCOUNT_ADDRESSES', WORK_DIR . "/account_addresses");  }
+if (!defined('DOMAINS'))           { define('DOMAINS',           WORK_DIR . "/domains");   }
+if (!defined('ADDRESSES'))         { define('ADDRESSES',         WORK_DIR . "/address_aliases"); }
+if (!defined('PASSWORDS'))         { define('PASSWORDS',         WORK_DIR . "/passwords");  }
+if (!defined('TESTS'))             { define('TESTS',             WORK_DIR . "/tests");  }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 @require_once(INST_DIR . '/res/backend/lib/utilities.incl.php');
 @require_once(INST_DIR . '/res/backend/lib/sessionDestroy.incl.php');
 @require_once(INST_DIR . '/res/backend/lib/HttpCodes.incl.php');
+@require_once(INST_DIR . '/res/backend/lib/LoggerShortcuts.incl.php');
+@require_once(INST_DIR . '/res/backend/lib/Logger.incl.php');
+@require_once(INST_DIR . '/config/logging.cfg.php');
+Logger::configure($LOGGING);
 
-include_once(INST_DIR . '/res/backend/lib/apache-log4php-2.3.0/Logger.php');
 // Passing the configurator as string
-LoggerMDC::put('sessionid', session_id());
-Logger::configure(array(
-    'rootLogger' => array(
-        'appenders' => array('default')
-    ),
-    'appenders' => array(
-        'default' => array(
-            'class' => 'LoggerAppenderDailyFile',
-            'layout' => array(
-                'class' => 'LoggerLayoutPattern',
-                'params' => array(
-                    'conversionPattern' => '%date{Y-m-d H:i:s,u} [%server{REMOTE_ADDR}] %p %c %x - %m%n'
-                )
-            ),
-            'params' => array(
-                'datePattern' => 'Y-m-d',
-                'file' => __DIR__ . '/logs/pdadmin_%s.log',
-            ),
-        ),
-    )
-));
-
-$logger = Logger::getLogger(basename(__FILE__));
-
 $params = @explode("/", @substr(@$_SERVER['PATH_INFO'], 1));
 $isDefault = false;
 if ($params && count($params) > 0 && strlen($params[0]) > 0) {
@@ -106,28 +84,29 @@ if (!file_exists($incl)) {
         exit (0);
     }
 }
-$logger->debug("Loading request-handling module-file '$incl'.");
+debug(__FILE__, __LINE__, "Loading request-handling module-file '$incl'.");
 if (!validateSession()) {
     if ($httpMethod != 'post' && $filename != 'login' && !$isDefault) {
         if (php_sapi_name() != 'cli') {
-            $logger->info("Invalid request. User is not logged in or session timed out.");
+            info(__FILE__, __LINE__, "Invalid request. User is not logged in or session timed out.");
             header(HTTP_VERSION . ' ' . HTTP_401);
             exit(0);        
         }
     }
 }
+
 ob_start();
 include_once($incl);
 if (!function_exists($httpMethod)) {
     ob_end_clean();
-    $logger->info("Unsupported http-operation '$httpMethod' (by module '$filename').");
+    info(__FILE__, __LINE__, "Unsupported http-operation '$httpMethod' (by module '$filename').");
     header(HTTP_VERSION . ' ' . HTTP_405);
     exit (0);
 }
 if (!isset($_SESSION['user:isAdmin']) || !$_SESSION['user:isAdmin']) {
     if (!isset($GLOBALS['ADMIN_ROLE_REQUIRED']) || $GLOBALS['ADMIN_ROLE_REQUIRED']) {
         ob_end_clean();
-        $logger->info("Unauthorized http-operation '$httpMethod' (by module '$filename'). The user is not an admin!");
+        info(__FILE__, __LINE__, "Unauthorized http-operation '$httpMethod' (by module '$filename'). The user is not an admin!");
         header(HTTP_VERSION . ' ' . HTTP_401);
         exit (0);
     }
@@ -156,9 +135,9 @@ if (!$data || (is_array($data) && count($data) == 0)) {
     fclose($handle);
     if (strpos($rawData, '{') === 0 && strrpos($rawData, '}') === strlen($rawData) - 1) {
         $data = @json_decode($rawData, true);
+    } else {
     }
 }
-$logger->info("Received data for $httpMethod(...) in module '$filename'.");
 $result = array();
 @session_start();
 try {
@@ -192,5 +171,5 @@ try {
     @header(HTTP_VERSION . ' ' . HTTP_409);
     print $e->getMessage() . "\n";
 }
-$logger->info("Response written to brwoser, created by $httpMethod(...) in module '$filename'.");
+info(__FILE__, __LINE__, "Response written to brwoser, created by $httpMethod(...) in module '$filename'.");
 ?>

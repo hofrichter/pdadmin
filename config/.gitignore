@@ -1,0 +1,10 @@
+####### attention ##############################################################
+# There are more ".gitignore"-files in all folders, which should stay empty!
+################################################################################
+*.zip
+*.tar
+*.tgz
+*.tar.gz
+# we have an 'pdadmin.cfg_example' so we don't need to publish any configuration
+# of potential production-details
+pdadmin.cfg

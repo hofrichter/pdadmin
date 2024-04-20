@@ -60,7 +60,7 @@ angular.module('custom-directives', ['session', 'http-auth-interceptor'])
         return {
             restrict: 'A',
             scope: {
-                // @  Used to pass a string value into the directive
+                // @    Used to pass a string value into the directive
                 // =    Used to create a two-way binding to an object that is passed into the directive
                 // &    Allows an external function to be passed into the directive and invoked
                 items: '=',
@@ -70,17 +70,18 @@ angular.module('custom-directives', ['session', 'http-auth-interceptor'])
                 customToLabel: '=toLabel',
                 customIsSelected: '=isSelected',
                 customNothingSelectedLabel: '@nothingSelectedLabel',
-                readonly: '='
+                readonly: '=',
+                single: '=singleSelection'
             },
             template: function() {
                 var template = 
-                      '<span ng-show="readonly">{{dropDownLabel}}</span>'
+                      '<span ng-show="readonly">{{dropDownLabel}} <span ng-show="selectedItemCount > 1" class="badge">{{selectedItemCount}}</span></span>'
                     + '<div ng-hide="readonly" class="btn-group" dropdown is-open="status.isopen">'
                        + '<button id="single-button" type="button" class="btn btn-primary" dropdown-toggle>'
-                          + '{{dropDownLabel}} <span class="caret"></span>'
+                          + '{{dropDownLabel}} <span ng-show="selectedItemCount > 1" class="badge">{{selectedItemCount}}</span> <span class="caret"></span>'
                        + '</button>'
                        + '<ul class="dropdown-menu" role="menu" aria-labelledby="single-button">'
-                           + '<li ng-repeat="item in items">'
+                           + '<li ng-repeat="item in items" style="white-space:nowrap;">'
                               + '<div class="checkbox" ng-click="click($event, item)"><label><span class="glyphicon {{isSelected(item) ? \'glyphicon-ok\' : \'\'}}"></span> {{toString(item)}}</label></div></a>'
                           + '</li>'
                        + '</ul>'
@@ -119,6 +120,8 @@ angular.module('custom-directives', ['session', 'http-auth-interceptor'])
                             $scope.checkedState.splice(i, 1);
                             enable = false;
                             break;
+                        } else if ($scope.single == true) {
+                            $scope.checkedState.splice(i, 1);
                         }
                     }
                     if (enable || $event.target.checked) {
@@ -130,6 +133,7 @@ angular.module('custom-directives', ['session', 'http-auth-interceptor'])
                     }
                     $scope.selectedItems.sort();
                     $scope.dropDownLabel = $scope.toLabel($scope.selectedItems) || $scope.nothingSelectedLabel;
+                    $scope.selectedItemCount = $scope.selectedItems ? $scope.selectedItems.length : 0;
                 }
                 $scope.isSelected = $scope.customIsSelected || function(item) {
                     for (var i = 0; i < $scope.checkedState.length; i++) {
@@ -141,10 +145,20 @@ angular.module('custom-directives', ['session', 'http-auth-interceptor'])
                 }
                 $scope.checkedState = [];
                 $scope.selectedItems = $scope.selectedItems || [];
-                for (var i = 0; i < $scope.selectedItems.length; i++) {
-                    $scope.checkedState.push($scope.selectedItems[i]);
+                if (typeof($scope.selectedItems) == 'string') {
+                    $scope.checkedState.push($scope.selectedItems);
+                } else {
+
+                    for (var i = $scope.selectedItems.length - 1; i >= 0; i--) {
+                        if ($scope.items.indexOf($scope.selectedItems[i]) == -1) {
+                            $scope.selectedItems.splice(i, 1);  
+                        } else {
+                            $scope.checkedState.unshift($scope.selectedItems[i]);  
+                        }
+                    }
                 }
                 $scope.dropDownLabel = $scope.toLabel($scope.selectedItems) || $scope.nothingSelectedLabel;
+                $scope.selectedItemCount = typeof($scope.selectedItems) == 'object' ? $scope.selectedItems.length : 0;
             }
         };
     })

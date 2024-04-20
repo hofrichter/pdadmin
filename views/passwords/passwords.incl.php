@@ -31,12 +31,12 @@ function put(array $requestData) {
     $insert = false;
     $requestData['#'] = __buildHashCode($requestData);
     if (isset($requestData['oldaccount']) && strlen($requestData['oldaccount']) > 0) {
-        delete($requestData);
         unset($requestData['oldaccount']);
         $insert = true;
     } else {
         return false;
     }
+
     if ($requestData['#']) {
         $result = __save('PASSWORDS', $requestData, $insert);
         $result = (1 == __saved($requestData, $result));
