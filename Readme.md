@@ -6,6 +6,15 @@ by Sven Hofrichter
 
 # Introduction
 
+## Outdated and still usable
+
+Do not use this project without any additional security things in production.
+The project helps admins and users in a filebased configured postfix-dovecot-server-environment,
+to add, change or remove mail domains, -users and -addresses via a userfriendly ui.
+The implementation bases on real outdated technics like angular 1 (I started to hate it after this
+project) and php with a selfmade rest layer. But the technoligy does not change the comfort
+for the users.
+
 ## Project gools
 This tiny project was made to find some best practices for "sugarfree.im". The
 second gaol - in your eyes the main goal - was, to implement something, that
